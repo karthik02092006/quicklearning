@@ -1,0 +1,21 @@
+{
+  "name": "quick-learn",
+  "version": "1.0.0",
+  "description": "Quick Learn - Multilingual Education and Assessment Portal",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "education",
+    "multilingual",
+    "quiz",
+    "translation",
+    "santali",
+    "bengali"
+  ],
+  "author": "Quick Learn Team",
+  "license": "ISC"
+}

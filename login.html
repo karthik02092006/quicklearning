@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Login - Quick Learn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Global Navbar Mount -->
+  <div id="navbar-mount"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <div class="auth-wrapper">
+        <div class="page-header" style="text-align: center; margin-bottom: 1.5rem;">
+          <h1 class="page-title" style="justify-content: center;">
+            <span>🔐</span> Quick Learn Portal Login
+          </h1>
+          <p class="page-desc" style="margin: 0 auto;">
+            Separate secure access for Students and Teachers. Select your role below.
+          </p>
+        </div>
+
+        <!-- Role Tabs -->
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabStudent" onclick="switchAuthTab('student')">
+            <span>🎓</span> Student Login
+          </button>
+          <button class="auth-tab" id="tabTeacher" onclick="switchAuthTab('teacher')">
+            <span>👩‍🏫</span> Teacher Login
+          </button>
+          <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">
+            <span>✨</span> Sign Up
+          </button>
+        </div>
+
+        <!-- Login / Register Card -->
+        <div class="card">
+          <!-- Active Role Indicator Banner -->
+          <div id="roleBanner" style="margin-bottom: 1.25rem; padding: 0.65rem 1rem; border-radius: var(--radius-md); background: #e0e7ff; color: #3730a3; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+            <span>🎓</span> <span>Logging in as <strong>Student</strong></span>
+          </div>
+
+          <!-- Form -->
+          <form id="authForm" onsubmit="handleAuthSubmit(event)">
+            
+            <!-- Full Name (Only for registration) -->
+            <div class="form-group" id="groupName" style="display: none;">
+              <label class="form-label">Full Name</label>
+              <input type="text" id="inputName" class="form-input" placeholder="e.g. Aryan Sharma">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" id="inputEmail" class="form-input" placeholder="student@quicklearn.com" required>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+              <label class="form-label">Password</label>
+              <input type="password" id="inputPassword" class="form-input" placeholder="••••••••" required>
+            </div>
+
+            <!-- Mother Tongue Selection (for Registration) -->
+            <div class="form-group" id="groupMotherTongue" style="display: none;">
+              <label class="form-label">Select Preferred Mother Tongue</label>
+              <select id="inputMotherTongue" class="form-select">
+                <option value="en">🇬🇧 English</option>
+                <option value="bn">🇮🇳 Bengali (বাংলা)</option>
+                <option value="sat">🇮🇳 Santali (ᱥᱟᱱᱛᱟᱲᱤ)</option>
+                <option value="hi" selected>🇮🇳 Hindi (हिन्दी)</option>
+                <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+                <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+                <option value="mr">🇮🇳 Marathi (मराठी)</option>
+                <option value="es">🇪🇸 Spanish (Español)</option>
+                <option value="fr">🇫🇷 French (Français)</option>
+                <option value="de">🇩🇪 German (Deutsch)</option>
+              </select>
+            </div>
+
+            <!-- Role Selector (Only for registration) -->
+            <div class="form-group" id="groupRoleSelect" style="display: none;">
+              <label class="form-label">Account Role</label>
+              <select id="inputRole" class="form-select">
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+              </select>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.75rem;" id="submitBtn">
+              <span>Sign In as Student</span> <span>→</span>
+            </button>
+          </form>
+
+          <!-- Quick Autofill Demo Credentials -->
+          <div class="demo-credentials-box">
+            <div class="demo-title">
+              <span>⚡</span> <span>One-Click Demo Credentials:</span>
+            </div>
+            
+            <button class="demo-quick-btn" onclick="fillDemoCredentials('student')">
+              <div>
+                <strong>🎓 Demo Student</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">student@quicklearn.com • student123</div>
+              </div>
+              <span class="badge badge-primary">Auto Fill</span>
+            </button>
+
+            <button class="demo-quick-btn" onclick="fillDemoCredentials('teacher')">
+              <div>
+                <strong>👩‍🏫 Demo Teacher</strong>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">teacher@quicklearn.com • teacher123</div>
+              </div>
+              <span class="badge badge-warning">Auto Fill</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer Mount -->
+  <div id="footer-mount"></div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let currentAuthMode = "student"; // 'student', 'teacher', or 'register'
+
+    function switchAuthTab(mode) {
+      currentAuthMode = mode;
+      
+      document.getElementById("tabStudent").classList.toggle("active", mode === "student");
+      document.getElementById("tabTeacher").classList.toggle("active", mode === "teacher");
+      document.getElementById("tabRegister").classList.toggle("active", mode === "register");
+
+      const roleBanner = document.getElementById("roleBanner");
+      const groupName = document.getElementById("groupName");
+      const groupMotherTongue = document.getElementById("groupMotherTongue");
+      const groupRoleSelect = document.getElementById("groupRoleSelect");
+      const submitBtn = document.getElementById("submitBtn");
+      const emailInput = document.getElementById("inputEmail");
+
+      if (mode === "student") {
+        roleBanner.style.display = "flex";
+        roleBanner.style.background = "#e0e7ff";
+        roleBanner.style.color = "#3730a3";
+        roleBanner.innerHTML = "<span>🎓</span> <span>Logging in as <strong>Student</strong></span>";
+        groupName.style.display = "none";
+        groupMotherTongue.style.display = "none";
+        groupRoleSelect.style.display = "none";
+        submitBtn.innerHTML = "<span>Sign In as Student</span> <span>→</span>";
+        emailInput.value = "student@quicklearn.com";
+        document.getElementById("inputPassword").value = "student123";
+      } else if (mode === "teacher") {
+        roleBanner.style.display = "flex";
+        roleBanner.style.background = "#fdf2f8";
+        roleBanner.style.color = "#9d174d";
+        roleBanner.innerHTML = "<span>👩‍🏫</span> <span>Logging in as <strong>Teacher</strong></span>";
+        groupName.style.display = "none";
+        groupMotherTongue.style.display = "none";
+        groupRoleSelect.style.display = "none";
+        submitBtn.innerHTML = "<span>Sign In as Teacher</span> <span>→</span>";
+        emailInput.value = "teacher@quicklearn.com";
+        document.getElementById("inputPassword").value = "teacher123";
+      } else {
+        roleBanner.style.display = "none";
+        groupName.style.display = "block";
+        groupMotherTongue.style.display = "block";
+        groupRoleSelect.style.display = "block";
+        submitBtn.innerHTML = "<span>Create My Account</span> <span>→</span>";
+        emailInput.value = "";
+        document.getElementById("inputPassword").value = "";
+      }
+    }
+
+    function fillDemoCredentials(role) {
+      switchAuthTab(role);
+      window.QuickLearnApp.showToast(`Autofilled ${role === 'teacher' ? 'Teacher' : 'Student'} credentials`, "info");
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById("inputEmail").value;
+      const password = document.getElementById("inputPassword").value;
+
+      if (currentAuthMode === "register") {
+        const name = document.getElementById("inputName").value;
+        const role = document.getElementById("inputRole").value;
+        const motherTongue = document.getElementById("inputMotherTongue").value;
+
+        if (!name.trim()) {
+          window.QuickLearnApp.showToast("Please enter your name", "error");
+          return;
+        }
+
+        const res = window.QuickLearnAuth.register(name, email, password, role, motherTongue);
+        if (res.success) {
+          window.QuickLearnApp.showToast(`Account created! Welcome, ${res.user.name}`, "success");
+          setTimeout(() => {
+            window.location.href = res.user.role === "teacher" ? "teacher.html" : "lessons.html";
+          }, 800);
+        } else {
+          window.QuickLearnApp.showToast(res.message, "error");
+        }
+      } else {
+        const expectedRole = currentAuthMode;
+        const res = window.QuickLearnAuth.login(email, password, expectedRole);
+        if (res.success) {
+          window.QuickLearnApp.showToast(`Welcome back, ${res.user.name}!`, "success");
+          setTimeout(() => {
+            window.location.href = res.user.role === "teacher" ? "teacher.html" : "lessons.html";
+          }, 700);
+        } else {
+          window.QuickLearnApp.showToast(res.message, "error");
+        }
+      }
+    }
+
+    // Initialize with student autofill
+    document.addEventListener("DOMContentLoaded", () => {
+      switchAuthTab("student");
+    });
+  </script>
+</body>
+</html>

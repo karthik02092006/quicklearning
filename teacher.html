@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Portal - Quick Learn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Global Navbar Mount -->
+  <div id="navbar-mount"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Student Role Notice Banner (if viewed by student) -->
+      <div id="studentRoleNotice" class="card" style="display: none; background: #fffbeb; border: 1px solid #fde68a; margin-bottom: 2rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <span style="font-size: 1.75rem;">ℹ️</span>
+            <div>
+              <strong style="color: #92400e;">You are currently logged in as a Student.</strong>
+              <p style="font-size: 0.875rem; color: #b45309; margin: 0;">
+                To view and manage student assessment records and publish study notes as a teacher, click switch below.
+              </p>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="window.QuickLearnAuth.quickSwitchRole('teacher')">
+            <span>🔄</span> Switch to Teacher Account
+          </button>
+        </div>
+      </div>
+
+      <!-- Teacher Header -->
+      <div class="page-header" style="flex-direction: row; justify-content: space-between; align-items: flex-start; flex-wrap: wrap;">
+        <div>
+          <h1 class="page-title">
+            <span>👩‍🏫</span> <span data-i18n="nav_teacher">Teacher Analytics Portal</span>
+          </h1>
+          <p class="page-desc">
+            Monitor real-time student assessment performance, inspect subject scores, and publish announcements.
+          </p>
+        </div>
+        <div id="teacherProfileCard" style="display: flex; align-items: center; gap: 0.85rem; background: #fff; padding: 0.65rem 1.1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);">
+          <span style="font-size: 2.25rem;">👩‍🏫</span>
+          <div>
+            <strong id="teacherName">Prof. Sarah Jenkins</strong>
+            <small style="display: block; color: var(--text-muted);" id="teacherDept">Science & Math Faculty</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics KPI Row -->
+      <div class="stats-row">
+        <div class="card stat-card">
+          <div class="stat-icon" style="background: #e0e7ff; color: var(--primary);">📝</div>
+          <div class="stat-info">
+            <h4>Assessments Taken</h4>
+            <div class="stat-value" id="kpiTotalTests">0</div>
+          </div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="stat-icon" style="background: #dcfce7; color: var(--success);">📈</div>
+          <div class="stat-info">
+            <h4>Average Class Score</h4>
+            <div class="stat-value" id="kpiAvgScore">0%</div>
+          </div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="stat-icon" style="background: #fef3c7; color: var(--warning);">⭐</div>
+          <div class="stat-info">
+            <h4>A+ Grade Rate</h4>
+            <div class="stat-value" id="kpiGradeRate">0%</div>
+          </div>
+        </div>
+
+        <div class="card stat-card">
+          <div class="stat-icon" style="background: #fdf2f8; color: #db2777);">👥</div>
+          <div class="stat-info">
+            <h4>Active Students</h4>
+            <div class="stat-value" id="kpiStudents">4</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Student Assessment Records Table -->
+      <section class="card" style="margin-bottom: 2.5rem; background: #fff;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+          <div>
+            <h3 style="font-size: 1.25rem; font-weight: 700;">Student Quiz & Assessment Logs</h3>
+            <p style="font-size: 0.875rem; color: var(--text-muted);">
+              Instant records generated whenever students submit quizzes in Math, Science, or English.
+            </p>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="refreshRecords()">
+            <span>🔄</span> Refresh Table
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Subject</th>
+                <th>Score</th>
+                <th>Grade</th>
+                <th>Date & Time</th>
+                <th>Teacher Feedback</th>
+              </tr>
+            </thead>
+            <tbody id="assessmentRecordsTbody">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Publish Study Note / Announcement Card -->
+      <section class="card" style="background: #fff;">
+        <div class="page-header" style="margin-bottom: 1.25rem;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+            <span>📢</span> Publish Study Announcement or Lesson Note
+          </h3>
+          <p class="page-desc" style="font-size: 0.9rem;">
+            Broadcast revision tips, upcoming test reminders, or reference notes to all students.
+          </p>
+        </div>
+
+        <form id="announcementForm" onsubmit="handleAnnouncementSubmit(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Subject</label>
+              <select id="announceSubject" class="form-select">
+                <option value="mathematics">📐 Mathematics</option>
+                <option value="science">🔬 Science</option>
+                <option value="english">📚 English</option>
+                <option value="all">🌐 General / All Subjects</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Note Title</label>
+              <input type="text" id="announceTitle" class="form-input" placeholder="e.g. Weekly Formulas Revision" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Study Instructions / Note Body</label>
+            <textarea id="announceBody" class="form-textarea" rows="3" placeholder="Provide advice, key formulas, or encouragement for students..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-sm">
+            <span>📢</span> Post Study Announcement
+          </button>
+        </form>
+
+        <!-- Existing announcements list -->
+        <div style="margin-top: 1.75rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.85rem; color: var(--text-muted); text-transform: uppercase;">
+            Published Notes:
+          </h4>
+          <div id="announcementsList" style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Global Footer Mount -->
+  <div id="footer-mount"></div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const INITIAL_ANNOUNCEMENTS = [
+      {
+        id: "ann-1",
+        subject: "mathematics",
+        subjectLabel: "Mathematics",
+        title: "Pythagorean Theorem Practice Homework",
+        body: "Please review Pythagorean triples (3-4-5 and 5-12-13) before tomorrow's assessment.",
+        date: "2026-10-10 17:00",
+        author: "Prof. Sarah Jenkins"
+      },
+      {
+        id: "ann-2",
+        subject: "science",
+        subjectLabel: "Science",
+        title: "Photosynthesis Balanced Chemical Equation",
+        body: "Make sure you memorize 6CO₂ + 6H₂O + Sunlight -> C₆H₁₂O₆ + 6O₂ for the upcoming midterm.",
+        date: "2026-10-11 08:30",
+        author: "Prof. Sarah Jenkins"
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      checkTeacherAccess();
+      renderAnalytics();
+      renderRecordsTable();
+      renderAnnouncements();
+    });
+
+    function checkTeacherAccess() {
+      const user = window.QuickLearnAuth.getCurrentUser();
+      const notice = document.getElementById("studentRoleNotice");
+      const profileCard = document.getElementById("teacherProfileCard");
+
+      if (user && user.role === "student") {
+        notice.style.display = "block";
+      } else {
+        notice.style.display = "none";
+      }
+
+      if (user) {
+        document.getElementById("teacherName").textContent = user.name;
+        document.getElementById("teacherDept").textContent = user.department || "Faculty Member";
+      }
+    }
+
+    function renderAnalytics() {
+      const records = window.QuickLearnData.getAssessmentRecords();
+      const total = records.length;
+      document.getElementById("kpiTotalTests").textContent = total;
+
+      if (total === 0) {
+        document.getElementById("kpiAvgScore").textContent = "0%";
+        document.getElementById("kpiGradeRate").textContent = "0%";
+        return;
+      }
+
+      const sum = records.reduce((acc, r) => acc + (r.score || 0), 0);
+      const avg = Math.round(sum / total);
+      document.getElementById("kpiAvgScore").textContent = `${avg}%`;
+
+      const aCount = records.filter(r => r.grade === "A+" || r.grade === "A").length;
+      const rate = Math.round((aCount / total) * 100);
+      document.getElementById("kpiGradeRate").textContent = `${rate}%`;
+
+      // Unique students count
+      const uniqueStudents = new Set(records.map(r => r.studentEmail));
+      document.getElementById("kpiStudents").textContent = uniqueStudents.size;
+    }
+
+    function renderRecordsTable() {
+      const records = window.QuickLearnData.getAssessmentRecords();
+      const tbody = document.getElementById("assessmentRecordsTbody");
+
+      if (records.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: var(--text-muted);">No assessment records submitted yet. Take a quiz from the Quiz page to see results here!</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = records.map(r => `
+        <tr>
+          <td>
+            <strong>${r.studentName}</strong>
+            <small style="display:block; color:var(--text-muted); font-size:0.75rem;">${r.studentEmail}</small>
+          </td>
+          <td>
+            <span class="badge ${r.subject === 'mathematics' ? 'badge-primary' : r.subject === 'science' ? 'badge-success' : 'badge-warning'}">
+              ${r.subjectLabel}
+            </span>
+          </td>
+          <td>
+            <strong>${r.score}%</strong> (${r.correctCount || Math.round(r.score/20)} / ${r.total || 5})
+          </td>
+          <td>
+            <span class="badge ${r.grade === 'A+' || r.grade === 'A' ? 'badge-success' : 'badge-warning'}">
+              ${r.grade}
+            </span>
+          </td>
+          <td style="color: var(--text-muted); font-size: 0.8rem;">
+            ${r.date || 'Recent'}
+          </td>
+          <td style="font-size: 0.85rem; color: #475569;">
+            ${r.feedback || 'Good job!'}
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function refreshRecords() {
+      renderAnalytics();
+      renderRecordsTable();
+      window.QuickLearnApp.showToast("Refreshed assessment records", "info");
+    }
+
+    function getAnnouncements() {
+      const saved = localStorage.getItem("quicklearn_announcements");
+      if (!saved) {
+        localStorage.setItem("quicklearn_announcements", JSON.stringify(INITIAL_ANNOUNCEMENTS));
+        return INITIAL_ANNOUNCEMENTS;
+      }
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return INITIAL_ANNOUNCEMENTS;
+      }
+    }
+
+    function renderAnnouncements() {
+      const list = getAnnouncements();
+      const container = document.getElementById("announcementsList");
+
+      container.innerHTML = list.map(a => `
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1.1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span class="badge badge-secondary">${a.subjectLabel || a.subject}</span>
+              <strong style="font-size: 0.95rem;">${a.title}</strong>
+            </div>
+            <small style="color: var(--text-muted);">${a.date}</small>
+          </div>
+          <p style="font-size: 0.875rem; color: var(--text-main); margin: 0;">${a.body}</p>
+          <small style="display: block; color: var(--text-muted); margin-top: 0.3rem;">By ${a.author}</small>
+        </div>
+      `).join("");
+    }
+
+    function handleAnnouncementSubmit(e) {
+      e.preventDefault();
+      const subject = document.getElementById("announceSubject").value;
+      const title = document.getElementById("announceTitle").value;
+      const body = document.getElementById("announceBody").value;
+      const user = window.QuickLearnAuth.getCurrentUser();
+
+      const newAnn = {
+        id: "ann-" + Date.now(),
+        subject: subject,
+        subjectLabel: subject === 'mathematics' ? 'Mathematics' : subject === 'science' ? 'Science' : subject === 'english' ? 'English' : 'General',
+        title: title.trim(),
+        body: body.trim(),
+        date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        author: user ? user.name : "Teacher"
+      };
+
+      const list = getAnnouncements();
+      list.unshift(newAnn);
+      localStorage.setItem("quicklearn_announcements", JSON.stringify(list));
+
+      document.getElementById("announcementForm").reset();
+      renderAnnouncements();
+      window.QuickLearnApp.showToast("Announcement published for students!", "success");
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quick Learn - Multilingual Education & Assessment Portal</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Global Navbar Mount -->
+  <div id="navbar-mount"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Hero Section -->
+      <section class="hero-section">
+        <div class="hero-pill">
+          <span>🌍</span> <span data-i18n="tagline">Multilingual Smart Learning Portal</span>
+        </div>
+        <h1 class="hero-title">
+          Master Concepts in Your <br><span class="gradient-text">Preferred Mother Tongue</span>
+        </h1>
+        <p class="hero-subtitle">
+          Quick Learn delivers interactive curriculum for <strong>Mathematics</strong>, <strong>Science</strong>, and <strong>English</strong> with 6-language translation, instant quizzes, and separate student & teacher portals.
+        </p>
+        <div class="hero-cta">
+          <a href="lessons.html" class="btn btn-primary btn-lg">
+            <span>📖</span> <span data-i18n="view_lesson">Explore Lessons</span>
+          </a>
+          <a href="quiz.html" class="btn btn-secondary btn-lg">
+            <span>🎯</span> <span data-i18n="start_quiz">Take a Quiz</span>
+          </a>
+          <a href="translate.html" class="btn btn-secondary btn-lg">
+            <span>🌐</span> <span data-i18n="nav_translate">Text Translator</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Current User Welcome Banner -->
+      <div class="card" style="margin-bottom: 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%); border-left: 5px solid var(--success);">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <span style="font-size: 2.5rem;" id="userWelcomeAvatar">🎓</span>
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 700;">
+              <span data-i18n="welcome">Welcome</span>, <span id="userWelcomeName">Student</span>!
+            </h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">
+              Current Mother Tongue: <strong id="userWelcomeLang">English</strong> • Role: <strong id="userWelcomeRole" class="badge badge-primary">STUDENT</strong>
+            </p>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.65rem;">
+          <a href="login.html" class="btn btn-secondary btn-sm">
+            <span>🔄</span> Switch Account / Login
+          </a>
+          <a href="teacher.html" class="btn btn-primary btn-sm" id="portalActionBtn">
+            <span>👩‍🏫</span> Open Teacher Portal
+          </a>
+        </div>
+      </div>
+
+      <!-- Feature Highlights Grid -->
+      <section style="margin-bottom: 3.5rem;">
+        <div class="page-header" style="text-align: center; align-items: center;">
+          <h2 class="page-title">Everything You Need to Excel</h2>
+          <p class="page-desc">Comprehensive learning tools structured neatly into dedicated easy-to-access pages.</p>
+        </div>
+
+        <div class="feature-grid">
+          <!-- Card 1: Separate Logins -->
+          <div class="card feature-card">
+            <div class="feature-icon-wrapper" style="background: #eef2ff; color: var(--primary);">
+              👥
+            </div>
+            <h3>User Login System</h3>
+            <p>Dedicated secure login portals tailored specifically for Students and Teachers with customized roles and dashboards.</p>
+            <a href="login.html" class="btn btn-secondary btn-sm">
+              <span>Go to Login</span> <span>→</span>
+            </a>
+          </div>
+
+          <!-- Card 2: 10 Languages & Mother Tongue -->
+          <div class="card feature-card">
+            <div class="feature-icon-wrapper" style="background: #fdf2f8; color: #db2777;">
+              🗣️
+            </div>
+            <h3>Mother Tongue Selection</h3>
+            <p>Switch between 10 supported languages: <strong>English, Bengali, Santali, Hindi, Tamil, Telugu, Marathi, Spanish, French, German</strong> anytime.</p>
+            <a href="translate.html" class="btn btn-secondary btn-sm">
+              <span>Select Language</span> <span>→</span>
+            </a>
+          </div>
+
+          <!-- Card 3: Text Translation -->
+          <div class="card feature-card">
+            <div class="feature-icon-wrapper" style="background: #ecfdf5; color: var(--success);">
+              🌐
+            </div>
+            <h3>Text Translation Studio</h3>
+            <p>Translate educational queries, formulas, and vocabulary between all 10 languages with audio speech synthesis and instant copy.</p>
+            <a href="translate.html" class="btn btn-secondary btn-sm">
+              <span>Open Translator</span> <span>→</span>
+            </a>
+          </div>
+
+          <!-- Card 4: Learning Materials -->
+          <div class="card feature-card">
+            <div class="feature-icon-wrapper" style="background: #eff6ff; color: var(--secondary);">
+              📐
+            </div>
+            <h3>Learning Materials</h3>
+            <p>Carefully curated lessons for <strong>Mathematics, Science, and English</strong> complete with formulas, diagrams, and summaries.</p>
+            <a href="lessons.html" class="btn btn-secondary btn-sm">
+              <span>View Materials</span> <span>→</span>
+            </a>
+          </div>
+
+          <!-- Card 5: Quizzes & Assessment -->
+          <div class="card feature-card">
+            <div class="feature-icon-wrapper" style="background: #fffbeb; color: var(--warning);">
+              🎯
+            </div>
+            <h3>Quiz & Assessment</h3>
+            <p>Test your understanding with real-time timed quizzes, instant scoring, answer explanations, and automated performance badges.</p>
+            <a href="quiz.html" class="btn btn-secondary btn-sm">
+              <span>Start Assessment</span> <span>→</span>
+            </a>
+          </div>
+
+          <!-- Card 6: Teacher Portal -->
+          <div class="card feature-card">
+            <div class="feature-icon-wrapper" style="background: #f5f3ff; color: var(--accent);">
+              📊
+            </div>
+            <h3>Teacher Analytics Portal</h3>
+            <p>Review student assessment scores, monitor class analytics, and post lesson notes or study guides directly to students.</p>
+            <a href="teacher.html" class="btn btn-secondary btn-sm">
+              <span>Teacher Dashboard</span> <span>→</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Subjects Preview Section -->
+      <section class="card" style="margin-bottom: 2rem; background: #fff;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="font-size: 1.5rem; font-weight: 800;">Featured Core Subjects</h3>
+            <p style="color: var(--text-muted); font-size: 0.95rem;">Pick a subject to read interactive lessons or launch a quick subject quiz.</p>
+          </div>
+          <a href="lessons.html" class="btn btn-primary btn-sm">
+            <span>Browse All Subjects</span> <span>→</span>
+          </a>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+          <!-- Math -->
+          <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: #f8fafc;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📐</div>
+            <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;" data-i18n="math_title">Mathematics</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Linear Equations, Pythagorean Theorem, Ratios & Percentages with step-by-step solutions.
+            </p>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="lessons.html?subject=mathematics" class="btn btn-secondary btn-sm" style="flex: 1;">Lessons</a>
+              <a href="quiz.html?subject=mathematics" class="btn btn-primary btn-sm" style="flex: 1;">Quiz</a>
+            </div>
+          </div>
+
+          <!-- Science -->
+          <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: #f8fafc;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔬</div>
+            <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;" data-i18n="science_title">Science</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Photosynthesis & Plant Biology, Newton's Laws of Motion, and Atomic Structure & Periodic Table.
+            </p>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="lessons.html?subject=science" class="btn btn-secondary btn-sm" style="flex: 1;">Lessons</a>
+              <a href="quiz.html?subject=science" class="btn btn-primary btn-sm" style="flex: 1;">Quiz</a>
+            </div>
+          </div>
+
+          <!-- English -->
+          <div style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: #f8fafc;">
+            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
+            <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;" data-i18n="english_title">English</h4>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem;">
+              Parts of Speech, PEEL Essay Writing structure, Contextual Idioms, and Vocabulary Enrichment.
+            </p>
+            <div style="display: flex; gap: 0.5rem;">
+              <a href="lessons.html?subject=english" class="btn btn-secondary btn-sm" style="flex: 1;">Lessons</a>
+              <a href="quiz.html?subject=english" class="btn btn-primary btn-sm" style="flex: 1;">Quiz</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Global Footer Mount -->
+  <div id="footer-mount"></div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = window.QuickLearnAuth.getCurrentUser();
+      const currentLang = window.QuickLearnAuth.getMotherTongue();
+      const langMeta = window.QuickLearnLang.LANGUAGES[currentLang];
+
+      if (user) {
+        document.getElementById("userWelcomeAvatar").textContent = user.avatar || "👤";
+        document.getElementById("userWelcomeName").textContent = user.name;
+        document.getElementById("userWelcomeRole").textContent = user.role.toUpperCase();
+        document.getElementById("userWelcomeRole").className = `badge ${user.role === 'teacher' ? 'badge-warning' : 'badge-primary'}`;
+        document.getElementById("userWelcomeLang").textContent = `${langMeta.flag} ${langMeta.native} (${langMeta.name})`;
+
+        const portalBtn = document.getElementById("portalActionBtn");
+        if (user.role === "teacher") {
+          portalBtn.style.display = "inline-flex";
+        } else {
+          portalBtn.href = "lessons.html";
+          portalBtn.innerHTML = "<span>📖</span> Continue Studying";
+        }
+      }
+    });
+  </script>
+</body>
+</html>

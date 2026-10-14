@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Materials - Quick Learn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Global Navbar Mount -->
+  <div id="navbar-mount"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div class="page-header">
+        <h1 class="page-title">
+          <span>📖</span> <span data-i18n="nav_lessons">Learning Materials</span>
+        </h1>
+        <p class="page-desc">
+          High-yield, crystal-clear lessons in Mathematics, Science, and English. Switch your preferred mother tongue at any time to view summaries in your language.
+        </p>
+      </div>
+
+      <!-- Controls: Subject Switcher & Search Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+        <!-- Subject Pills -->
+        <div class="subject-nav" style="border: none; padding: 0; margin: 0;">
+          <button class="subject-btn active" data-subject="all" onclick="filterBySubject('all')">
+            <span>🌐</span> All Subjects
+          </button>
+          <button class="subject-btn" data-subject="mathematics" onclick="filterBySubject('mathematics')">
+            <span>📐</span> <span data-i18n="math_title">Mathematics</span>
+          </button>
+          <button class="subject-btn" data-subject="science" onclick="filterBySubject('science')">
+            <span>🔬</span> <span data-i18n="science_title">Science</span>
+          </button>
+          <button class="subject-btn" data-subject="english" onclick="filterBySubject('english')">
+            <span>📚</span> <span data-i18n="english_title">English</span>
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div style="position: relative; min-width: 280px;">
+          <input 
+            type="text" 
+            id="lessonSearchInput" 
+            class="form-input" 
+            placeholder="Search formulas, concepts..."
+            style="padding-left: 2.25rem; border-radius: var(--radius-full);"
+            oninput="handleLessonSearch(this.value)"
+          >
+          <span style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.95rem;">🔍</span>
+        </div>
+      </div>
+
+      <!-- Lessons Grid Container -->
+      <div class="lessons-grid" id="lessonsContainer">
+        <!-- Rendered dynamically by script -->
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Lesson Reader Modal -->
+  <div id="lessonModal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem;">
+    <div class="card" style="max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; background: #fff; position: relative;">
+      
+      <!-- Modal Close Button -->
+      <button onclick="closeLessonModal()" style="position: absolute; top: 1.25rem; right: 1.25rem; background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1.15rem; display: flex; align-items: center; justify-content: center;">
+        ✕
+      </button>
+
+      <div id="modalContent">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Footer Mount -->
+  <div id="footer-mount"></div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let activeSubject = "all";
+    let searchQuery = "";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check query param for default subject
+      const params = new URLSearchParams(window.location.search);
+      const subj = params.get("subject");
+      if (subj && ["mathematics", "science", "english"].includes(subj)) {
+        filterBySubject(subj);
+      } else {
+        renderLessons();
+      }
+
+      // Re-render when mother tongue changes in the navbar
+      window.addEventListener("languageChanged", () => {
+        renderLessons();
+      });
+    });
+
+    function filterBySubject(subj) {
+      activeSubject = subj;
+      document.querySelectorAll(".subject-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-subject") === subj);
+      });
+      renderLessons();
+    }
+
+    function handleLessonSearch(val) {
+      searchQuery = val.trim().toLowerCase();
+      renderLessons();
+    }
+
+    function renderLessons() {
+      const container = document.getElementById("lessonsContainer");
+      const currentLang = window.QuickLearnAuth.getMotherTongue();
+      const langMeta = window.QuickLearnLang.LANGUAGES[currentLang] || window.QuickLearnLang.LANGUAGES.en;
+
+      let list = window.QuickLearnData.LESSONS_DATA;
+
+      if (activeSubject !== "all") {
+        list = list.filter(l => l.subject === activeSubject);
+      }
+
+      if (searchQuery) {
+        list = list.filter(l => 
+          l.title.toLowerCase().includes(searchQuery) ||
+          l.summary.toLowerCase().includes(searchQuery) ||
+          l.keyConcepts.some(c => c.toLowerCase().includes(searchQuery))
+        );
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🔍</div>
+            <h3>No lessons found</h3>
+            <p style="color: var(--text-muted);">Try adjusting your search keywords or switch subject filters.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map(lesson => {
+        const translatedSummary = lesson.summaries[currentLang] || lesson.summary;
+
+        return `
+          <div class="card lesson-card">
+            <div class="lesson-meta">
+              <span class="badge ${lesson.subject === 'mathematics' ? 'badge-primary' : lesson.subject === 'science' ? 'badge-success' : 'badge-warning'}">
+                ${lesson.icon} ${lesson.subjectTitle}
+              </span>
+              <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">⏱️ ${lesson.readTime}</span>
+            </div>
+
+            <h3 class="lesson-title">${lesson.title}</h3>
+            <p class="lesson-summary">${lesson.summary}</p>
+
+            <!-- Mother Tongue Translation Box -->
+            <div class="mother-tongue-box">
+              <strong>${langMeta.flag} In ${langMeta.native} (${langMeta.name}):</strong>
+              <span>${translatedSummary}</span>
+            </div>
+
+            <!-- Key Concepts Preview -->
+            <div style="margin-bottom: 1.25rem;">
+              <small style="font-weight: 700; text-transform: uppercase; color: var(--text-muted); font-size: 0.75rem;">Key Takeaway:</small>
+              <p style="font-size: 0.85rem; color: var(--text-main); margin-top: 2px;">
+                💡 ${lesson.keyConcepts[0]}
+              </p>
+            </div>
+
+            <div style="display: flex; gap: 0.65rem; margin-top: auto;">
+              <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="openLessonModal('${lesson.id}')">
+                <span>📖</span> Read Full Lesson
+              </button>
+              <a href="quiz.html?subject=${lesson.subject}" class="btn btn-secondary btn-sm" title="Practice Quiz">
+                <span>🎯</span>
+              </a>
+              <button class="btn btn-secondary btn-sm" onclick="window.QuickLearnApp.speakText('${lesson.title}. ${lesson.summaries.en}', '${currentLang}')" title="Listen Aloud">
+                <span>🔊</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function openLessonModal(lessonId) {
+      const lesson = window.QuickLearnData.LESSONS_DATA.find(l => l.id === lessonId);
+      if (!lesson) return;
+
+      const currentLang = window.QuickLearnAuth.getMotherTongue();
+      const langMeta = window.QuickLearnLang.LANGUAGES[currentLang] || window.QuickLearnLang.LANGUAGES.en;
+      const translatedSummary = lesson.summaries[currentLang] || lesson.summary;
+
+      const content = `
+        <div style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem;">
+          <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem;">
+            <span class="badge badge-primary">${lesson.icon} ${lesson.subjectTitle}</span>
+            <span class="badge badge-secondary">${lesson.level}</span>
+            <span class="badge badge-secondary">${lesson.readTime}</span>
+          </div>
+          <h2 style="font-size: 1.75rem; font-weight: 800; line-height: 1.25;">${lesson.title}</h2>
+        </div>
+
+        <!-- Mother Tongue Highlight Box inside modal -->
+        <div class="mother-tongue-box" style="margin-bottom: 1.5rem; padding: 1rem;">
+          <strong>${langMeta.flag} Summary in ${langMeta.native} (${langMeta.name}):</strong>
+          <p style="font-size: 0.95rem; margin-top: 0.25rem;">${translatedSummary}</p>
+          <button class="btn btn-secondary btn-sm" style="margin-top: 0.65rem;" onclick="window.QuickLearnApp.speakText('${translatedSummary.replace(/'/g, "\\'")}', '${currentLang}')">
+            <span>🔊</span> Listen in ${langMeta.name}
+          </button>
+        </div>
+
+        <!-- Core Lesson Body -->
+        <div style="font-size: 1rem; line-height: 1.7; color: var(--text-main); margin-bottom: 1.5rem;">
+          ${lesson.content}
+        </div>
+
+        <!-- Key Concepts Recap -->
+        <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.75rem;">
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main);">📌 Essential Concept Checklist:</h4>
+          <ul style="padding-left: 1.25rem; font-size: 0.9rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.4rem;">
+            ${lesson.keyConcepts.map(c => `<li>${c}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+          <button class="btn btn-secondary" onclick="closeLessonModal()">
+            Close
+          </button>
+          <a href="quiz.html?subject=${lesson.subject}" class="btn btn-primary">
+            <span>🎯</span> Take Assessment on this Topic
+          </a>
+        </div>
+      `;
+
+      document.getElementById("modalContent").innerHTML = content;
+      const modal = document.getElementById("lessonModal");
+      modal.style.display = "flex";
+    }
+
+    function closeLessonModal() {
+      document.getElementById("lessonModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>

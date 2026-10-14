@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Translation Studio - Quick Learn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Global Navbar Mount -->
+  <div id="navbar-mount"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div class="page-header" style="text-align: center; align-items: center;">
+        <h1 class="page-title">
+          <span>🌐</span> <span data-i18n="nav_translate">Text Translation Studio</span>
+        </h1>
+        <p class="page-desc">
+          Translate text effortlessly across <strong>10 supported languages</strong>: English, Spanish, French, German, Hindi, Tamil, <strong>Bengali (বাংলা)</strong>, <strong>Santali (ᱥᱟᱱᱛᱟᱲᱤ)</strong>, <strong>Telugu (తెలుగు)</strong>, and <strong>Marathi (मराठी)</strong>.
+        </p>
+      </div>
+
+      <!-- Main Translation Interface -->
+      <div class="card" style="padding: 2rem; margin-bottom: 2.5rem; background: #fff;">
+        
+        <!-- Language Bar with Swap Button -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+          <!-- Source Language -->
+          <div style="flex: 1; min-width: 220px;">
+            <label class="form-label" style="display: flex; align-items: center; gap: 0.35rem;">
+              <span>🚩</span> <span data-i18n="source_lang">From Language</span>
+            </label>
+            <select id="sourceLangSelect" class="form-select" onchange="handleLangSelectChange()">
+              <option value="en" selected>🇬🇧 English</option>
+              <option value="bn">🇮🇳 Bengali (বাংলা)</option>
+              <option value="sat">🇮🇳 Santali (ᱥᱟᱱᱛᱟᱲᱤ)</option>
+              <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+              <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+              <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+              <option value="mr">🇮🇳 Marathi (मराठी)</option>
+              <option value="es">🇪🇸 Spanish (Español)</option>
+              <option value="fr">🇫🇷 French (Français)</option>
+              <option value="de">🇩🇪 German (Deutsch)</option>
+            </select>
+          </div>
+
+          <!-- Swap Button -->
+          <div style="display: flex; align-items: flex-end; padding-bottom: 2px;">
+            <button class="swap-btn" title="Swap Languages" onclick="swapLanguages()">
+              ⇄
+            </button>
+          </div>
+
+          <!-- Target Language -->
+          <div style="flex: 1; min-width: 220px;">
+            <label class="form-label" style="display: flex; align-items: center; gap: 0.35rem;">
+              <span>🎯</span> <span data-i18n="target_lang">To Language</span>
+            </label>
+            <select id="targetLangSelect" class="form-select" onchange="handleLangSelectChange()">
+              <option value="en">🇬🇧 English</option>
+              <option value="bn" selected>🇮🇳 Bengali (বাংলা)</option>
+              <option value="sat">🇮🇳 Santali (ᱥᱟᱱᱛᱟᱲᱤ)</option>
+              <option value="hi">🇮🇳 Hindi (हिन्दी)</option>
+              <option value="ta">🇮🇳 Tamil (தமிழ்)</option>
+              <option value="te">🇮🇳 Telugu (తెలుగు)</option>
+              <option value="mr">🇮🇳 Marathi (मराठी)</option>
+              <option value="es">🇪🇸 Spanish (Español)</option>
+              <option value="fr">🇫🇷 French (Français)</option>
+              <option value="de">🇩🇪 German (Deutsch)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Two Panel Grid: Source Text & Translated Text -->
+        <div class="translator-grid">
+          
+          <!-- Input Panel -->
+          <div class="translate-panel">
+            <div class="translate-panel-header">
+              <span style="font-size: 0.825rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                Input Text
+              </span>
+              <button class="btn btn-secondary btn-sm" onclick="clearInput()" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">
+                Clear
+              </button>
+            </div>
+            <textarea 
+              id="sourceTextInput" 
+              class="translate-textarea" 
+              placeholder="Type or paste educational text, questions or sentences here..."
+              oninput="handleInputTyping()"
+            ></textarea>
+            <div class="translate-panel-footer">
+              <span style="font-size: 0.8rem; color: var(--text-muted);" id="charCount">0 characters</span>
+              <button class="btn btn-primary btn-sm" onclick="triggerTranslation()">
+                <span>⚡</span> <span data-i18n="translate_now">Translate Now</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Output Panel -->
+          <div class="translate-panel">
+            <div class="translate-panel-header">
+              <span style="font-size: 0.825rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+                Translated Result
+              </span>
+              <div style="display: flex; gap: 0.4rem;">
+                <button class="btn btn-secondary btn-sm" onclick="copyTranslation()" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;" title="Copy to clipboard">
+                  📋 Copy
+                </button>
+                <button class="btn btn-secondary btn-sm" onclick="speakCurrentTranslation()" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;" title="Listen to pronunciation">
+                  🔊 Listen
+                </button>
+              </div>
+            </div>
+            <textarea 
+              id="targetTextOutput" 
+              class="translate-textarea" 
+              style="background: #f8fafc; font-weight: 500;"
+              placeholder="Translation will appear here..." 
+              readonly
+            ></textarea>
+            <div class="translate-panel-footer">
+              <span style="font-size: 0.8rem; color: var(--primary);" id="translationStatus">Ready</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">10-Language Multilingual Engine</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quick Phrases Section -->
+        <div class="quick-phrases">
+          <div class="quick-phrases-title">
+            <span>💡</span> Quick Academic & Conversation Sample Phrases (Click to Translate):
+          </div>
+          <div class="phrase-chips" id="phraseChipsContainer">
+            <!-- Rendered by JavaScript -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Supported Languages Showcase -->
+      <section class="card" style="background: #f8fafc; border: 1px dashed var(--border-color);">
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🌐</span> 10 Supported Languages in Quick Learn
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.85rem;">
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-size: 1.4rem;">🇬🇧</div>
+            <strong style="font-size: 0.9rem;">English</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Global standard</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--primary-light); border-left: 3px solid var(--primary);">
+            <div style="font-size: 1.4rem;">🇮🇳</div>
+            <strong style="font-size: 0.9rem;">Bengali (বাংলা)</strong>
+            <div style="font-size: 0.75rem; color: var(--primary);">Added Language</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--primary-light); border-left: 3px solid var(--accent);">
+            <div style="font-size: 1.4rem;">🇮🇳</div>
+            <strong style="font-size: 0.9rem;">Santali (ᱥᱟᱱᱛᱟᱲᱤ)</strong>
+            <div style="font-size: 0.75rem; color: var(--accent);">Added Language</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--primary-light); border-left: 3px solid #0284c7;">
+            <div style="font-size: 1.4rem;">🇮🇳</div>
+            <strong style="font-size: 0.9rem;">Telugu (తెలుగు)</strong>
+            <div style="font-size: 0.75rem; color: #0284c7;">Added Language</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--primary-light); border-left: 3px solid #f59e0b;">
+            <div style="font-size: 1.4rem;">🇮🇳</div>
+            <strong style="font-size: 0.9rem;">Marathi (मराठी)</strong>
+            <div style="font-size: 0.75rem; color: #b45309;">Added Language</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-size: 1.4rem;">🇮🇳</div>
+            <strong style="font-size: 0.9rem;">Hindi (हिन्दी)</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">National language</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-size: 1.4rem;">🇮🇳</div>
+            <strong style="font-size: 0.9rem;">Tamil (தமிழ்)</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Classical language</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-size: 1.4rem;">🇪🇸</div>
+            <strong style="font-size: 0.9rem;">Spanish (Español)</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Español</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-size: 1.4rem;">🇫🇷</div>
+            <strong style="font-size: 0.9rem;">French (Français)</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Français</div>
+          </div>
+          <div style="background: #fff; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+            <div style="font-size: 1.4rem;">🇩🇪</div>
+            <strong style="font-size: 0.9rem;">German (Deutsch)</strong>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Deutsch</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Global Footer Mount -->
+  <div id="footer-mount"></div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let debounceTimer = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderSamplePhrases();
+      document.getElementById("sourceTextInput").value = "Mathematics is the language of science.";
+      triggerTranslation();
+    });
+
+    function renderSamplePhrases() {
+      const phrases = [
+        "Mathematics is the language of science.",
+        "What is photosynthesis in plants?",
+        "Gravity pulls objects toward the center of the Earth.",
+        "Practice makes a person perfect.",
+        "Good morning teacher",
+        "Thank you for the lesson",
+        "Hello, welcome to Quick Learn!"
+      ];
+
+      const container = document.getElementById("phraseChipsContainer");
+      container.innerHTML = phrases.map(p => `
+        <button class="phrase-chip" onclick="applySamplePhrase('${p.replace(/'/g, "\\'")}')">
+          ${p}
+        </button>
+      `).join("");
+    }
+
+    function applySamplePhrase(phrase) {
+      document.getElementById("sourceTextInput").value = phrase;
+      handleInputTyping();
+      triggerTranslation();
+    }
+
+    function handleInputTyping() {
+      const text = document.getElementById("sourceTextInput").value;
+      document.getElementById("charCount").textContent = `${text.length} characters`;
+
+      clearTimeout(debounceTimer);
+      if (text.trim().length > 0) {
+        debounceTimer = setTimeout(() => {
+          triggerTranslation();
+        }, 500);
+      } else {
+        document.getElementById("targetTextOutput").value = "";
+      }
+    }
+
+    async function triggerTranslation() {
+      const text = document.getElementById("sourceTextInput").value;
+      const fromLang = document.getElementById("sourceLangSelect").value;
+      const toLang = document.getElementById("targetLangSelect").value;
+      const statusEl = document.getElementById("translationStatus");
+      const outputEl = document.getElementById("targetTextOutput");
+
+      if (!text.trim()) {
+        outputEl.value = "";
+        statusEl.textContent = "Ready";
+        return;
+      }
+
+      statusEl.textContent = "Translating...";
+      try {
+        const result = await window.QuickLearnLang.translateText(text, fromLang, toLang);
+        outputEl.value = result;
+        statusEl.textContent = "Translated successfully ✓";
+      } catch (err) {
+        statusEl.textContent = "Translation failed";
+        console.error(err);
+      }
+    }
+
+    function swapLanguages() {
+      const sourceSelect = document.getElementById("sourceLangSelect");
+      const targetSelect = document.getElementById("targetLangSelect");
+      const sourceInput = document.getElementById("sourceTextInput");
+      const targetOutput = document.getElementById("targetTextOutput");
+
+      const tempLang = sourceSelect.value;
+      sourceSelect.value = targetSelect.value;
+      targetSelect.value = tempLang;
+
+      const tempText = sourceInput.value;
+      sourceInput.value = targetOutput.value;
+      targetOutput.value = tempText;
+
+      handleInputTyping();
+      triggerTranslation();
+      window.QuickLearnApp.showToast("Languages swapped", "info");
+    }
+
+    function handleLangSelectChange() {
+      triggerTranslation();
+    }
+
+    function clearInput() {
+      document.getElementById("sourceTextInput").value = "";
+      document.getElementById("targetTextOutput").value = "";
+      document.getElementById("charCount").textContent = "0 characters";
+      document.getElementById("translationStatus").textContent = "Ready";
+    }
+
+    function copyTranslation() {
+      const output = document.getElementById("targetTextOutput").value;
+      if (!output) {
+        window.QuickLearnApp.showToast("Nothing to copy!", "error");
+        return;
+      }
+      navigator.clipboard.writeText(output).then(() => {
+        window.QuickLearnApp.showToast("Copied to clipboard!", "success");
+      }).catch(() => {
+        window.QuickLearnApp.showToast("Failed to copy text", "error");
+      });
+    }
+
+    function speakCurrentTranslation() {
+      const text = document.getElementById("targetTextOutput").value;
+      const lang = document.getElementById("targetLangSelect").value;
+      if (!text) {
+        window.QuickLearnApp.showToast("No translated text to read!", "error");
+        return;
+      }
+      window.QuickLearnApp.speakText(text, lang);
+    }
+  </script>
+</body>
+</html>

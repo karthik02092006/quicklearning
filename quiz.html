@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz & Assessment - Quick Learn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Global Navbar Mount -->
+  <div id="navbar-mount"></div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Page Header -->
+      <div class="page-header" style="text-align: center; align-items: center;">
+        <h1 class="page-title">
+          <span>🎯</span> <span data-i18n="nav_quiz">Quiz & Assessment</span>
+        </h1>
+        <p class="page-desc">
+          Test your mastery in Mathematics, Science, and English. Get instant scoring, detailed answer explanations, and performance tracking.
+        </p>
+      </div>
+
+      <!-- Subject Selection Section (Visible before quiz starts) -->
+      <div id="quizSelectionView" class="quiz-container">
+        <div class="card" style="text-align: center; padding: 2.5rem 1.5rem; margin-bottom: 2rem;">
+          <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">Select an Assessment Subject</h2>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2rem;">
+            Each assessment consists of 5 multiple-choice questions designed to test your conceptual clarity.
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem;">
+            <!-- Math Card -->
+            <button class="card" style="cursor: pointer; text-align: left; background: #fff; border: 2px solid var(--border-color); transition: all 0.2s;" onclick="startQuiz('mathematics')">
+              <span style="font-size: 2.25rem; display: block; margin-bottom: 0.5rem;">📐</span>
+              <h3 style="font-size: 1.2rem; font-weight: 700;">Mathematics</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Equations, Geometry & Percentages</p>
+              <span class="badge badge-primary" style="margin-top: 1rem;">5 Questions • 5 Mins</span>
+            </button>
+
+            <!-- Science Card -->
+            <button class="card" style="cursor: pointer; text-align: left; background: #fff; border: 2px solid var(--border-color); transition: all 0.2s;" onclick="startQuiz('science')">
+              <span style="font-size: 2.25rem; display: block; margin-bottom: 0.5rem;">🔬</span>
+              <h3 style="font-size: 1.2rem; font-weight: 700;">Science</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Biology, Physics & Chemistry</p>
+              <span class="badge badge-success" style="margin-top: 1rem;">5 Questions • 5 Mins</span>
+            </button>
+
+            <!-- English Card -->
+            <button class="card" style="cursor: pointer; text-align: left; background: #fff; border: 2px solid var(--border-color); transition: all 0.2s;" onclick="startQuiz('english')">
+              <span style="font-size: 2.25rem; display: block; margin-bottom: 0.5rem;">📚</span>
+              <h3 style="font-size: 1.2rem; font-weight: 700;">English</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Grammar, Essays & Idioms</p>
+              <span class="badge badge-warning" style="margin-top: 1rem;">5 Questions • 5 Mins</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Quiz Execution View (Hidden initially) -->
+      <div id="quizActiveView" class="quiz-container" style="display: none;">
+        <!-- Top Status Bar -->
+        <div class="quiz-header-bar">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span class="badge badge-primary" id="activeSubjectBadge">📐 Mathematics</span>
+            <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);" id="questionCounter">Question 1 of 5</span>
+          </div>
+          <div class="quiz-timer">
+            <span>⏱️</span> <span id="timerDisplay">00:00</span>
+          </div>
+        </div>
+
+        <!-- Progress Track -->
+        <div class="quiz-progress-track">
+          <div class="quiz-progress-bar" id="progressBar" style="width: 20%;"></div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="card quiz-question-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <span class="badge badge-secondary" id="difficultyBadge">Difficulty: Easy</span>
+          </div>
+
+          <h2 class="quiz-question-text" id="questionText">Loading question...</h2>
+
+          <!-- Options List -->
+          <div class="quiz-options-list" id="optionsList">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Explanation Box (Appears after answer checked) -->
+          <div id="explanationContainer" style="display: none;" class="quiz-explanation-box">
+            <strong>💡 Explanation:</strong>
+            <p id="explanationText" style="margin-top: 0.25rem; color: var(--text-muted);"></p>
+          </div>
+
+          <!-- Question Controls -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.75rem; border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+            <button class="btn btn-secondary btn-sm" onclick="quitQuiz()">
+              Quit Quiz
+            </button>
+            <div style="display: flex; gap: 0.65rem;">
+              <button class="btn btn-secondary btn-sm" id="verifyBtn" onclick="verifyCurrentAnswer()" disabled>
+                Check Answer
+              </button>
+              <button class="btn btn-primary btn-sm" id="nextQuestionBtn" onclick="goToNextQuestion()" disabled>
+                <span>Next</span> <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assessment Result View (Hidden initially) -->
+      <div id="quizResultView" class="quiz-container" style="display: none;">
+        <div class="card score-card">
+          <div class="score-circle">
+            <span class="score-number" id="finalScorePercent">80%</span>
+            <span class="score-percent"><span id="finalCorrectCount">4</span> / 5 Correct</span>
+          </div>
+
+          <div id="finalGradeBadge" class="grade-badge-lg badge-success">
+            GRADE: A+ (Outstanding)
+          </div>
+
+          <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem;" id="resultHeadline">
+            Splendid Performance!
+          </h2>
+          <p style="color: var(--text-muted); font-size: 1rem; max-width: 520px; margin: 0 auto 1.5rem;" id="resultFeedback">
+            You demonstrated a strong grasp over fundamental concepts. Your score has been recorded into the teacher portal.
+          </p>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; justify-content: center; gap: 0.85rem; flex-wrap: wrap; margin-bottom: 2rem;">
+            <button class="btn btn-primary" onclick="restartCurrentQuiz()">
+              <span>🔄</span> Retake Assessment
+            </button>
+            <button class="btn btn-secondary" onclick="chooseAnotherSubject()">
+              <span>📋</span> Switch Subject
+            </button>
+            <a href="teacher.html" class="btn btn-secondary">
+              <span>👩‍🏫</span> View Teacher Log
+            </a>
+          </div>
+
+          <!-- Question-by-Question Review Breakdown -->
+          <div style="text-align: left; border-top: 1px solid var(--border-color); padding-top: 1.75rem;">
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 1rem;">Detailed Question Breakdown:</h3>
+            <div id="reviewBreakdownContainer" style="display: flex; flex-direction: column; gap: 1rem;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Global Footer Mount -->
+  <div id="footer-mount"></div>
+
+  <!-- Scripts -->
+  <script src="js/translations.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    let activeSubject = "mathematics";
+    let questions = [];
+    let currentIndex = 0;
+    let selectedOptionIndex = null;
+    let userAnswers = []; // records { question, selected, correct, isCorrect }
+    let timerInterval = null;
+    let elapsedSeconds = 0;
+    let isCurrentAnswerVerified = false;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const subj = params.get("subject");
+      if (subj && window.QuickLearnData.QUIZZES_DATA[subj]) {
+        startQuiz(subj);
+      }
+    });
+
+    function startQuiz(subjectKey) {
+      activeSubject = subjectKey;
+      questions = window.QuickLearnData.QUIZZES_DATA[subjectKey] || [];
+      currentIndex = 0;
+      selectedOptionIndex = null;
+      userAnswers = [];
+      elapsedSeconds = 0;
+      isCurrentAnswerVerified = false;
+
+      // Subject badge styling
+      const subjMeta = {
+        mathematics: { label: "📐 Mathematics", badge: "badge-primary" },
+        science: { label: "🔬 Science", badge: "badge-success" },
+        english: { label: "📚 English", badge: "badge-warning" }
+      }[subjectKey] || { label: "General", badge: "badge-secondary" };
+
+      const badgeEl = document.getElementById("activeSubjectBadge");
+      badgeEl.textContent = subjMeta.label;
+      badgeEl.className = `badge ${subjMeta.badge}`;
+
+      // Views
+      document.getElementById("quizSelectionView").style.display = "none";
+      document.getElementById("quizActiveView").style.display = "block";
+      document.getElementById("quizResultView").style.display = "none";
+
+      // Start timer
+      startTimer();
+
+      // Render first question
+      renderCurrentQuestion();
+    }
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      elapsedSeconds = 0;
+      updateTimerDisplay();
+      timerInterval = setInterval(() => {
+        elapsedSeconds++;
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(elapsedSeconds / 60);
+      const secs = elapsedSeconds % 60;
+      document.getElementById("timerDisplay").textContent = 
+        `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function renderCurrentQuestion() {
+      const q = questions[currentIndex];
+      selectedOptionIndex = null;
+      isCurrentAnswerVerified = false;
+
+      document.getElementById("questionCounter").textContent = `Question ${currentIndex + 1} of ${questions.length}`;
+      document.getElementById("progressBar").style.width = `${((currentIndex + 1) / questions.length) * 100}%`;
+      document.getElementById("difficultyBadge").textContent = `Difficulty: ${q.difficulty}`;
+      document.getElementById("questionText").textContent = q.question;
+
+      // Reset buttons and explanation
+      document.getElementById("verifyBtn").disabled = true;
+      document.getElementById("nextQuestionBtn").disabled = true;
+      document.getElementById("explanationContainer").style.display = "none";
+
+      // Render options
+      const list = document.getElementById("optionsList");
+      list.innerHTML = q.options.map((opt, i) => `
+        <button class="quiz-option-btn" id="optBtn-${i}" onclick="selectOption(${i})">
+          <span style="font-weight: 700; width: 28px; height: 28px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 0.85rem;">
+            ${String.fromCharCode(65 + i)}
+          </span>
+          <span style="flex: 1;">${opt}</span>
+        </button>
+      `).join("");
+    }
+
+    function selectOption(index) {
+      if (isCurrentAnswerVerified) return; // Prevent changing after verification
+      selectedOptionIndex = index;
+
+      document.querySelectorAll(".quiz-option-btn").forEach((btn, i) => {
+        btn.classList.toggle("selected", i === index);
+      });
+
+      document.getElementById("verifyBtn").disabled = false;
+      document.getElementById("nextQuestionBtn").disabled = false;
+    }
+
+    function verifyCurrentAnswer() {
+      if (selectedOptionIndex === null || isCurrentAnswerVerified) return;
+      isCurrentAnswerVerified = true;
+
+      const q = questions[currentIndex];
+      const isCorrect = selectedOptionIndex === q.correct;
+
+      // Highlight options
+      q.options.forEach((_, i) => {
+        const btn = document.getElementById(`optBtn-${i}`);
+        if (i === q.correct) {
+          btn.classList.add("correct");
+        } else if (i === selectedOptionIndex) {
+          btn.classList.add("incorrect");
+        }
+      });
+
+      // Show explanation
+      const expContainer = document.getElementById("explanationContainer");
+      const expText = document.getElementById("explanationText");
+      expContainer.style.display = "block";
+      expText.textContent = q.explanation;
+
+      document.getElementById("verifyBtn").disabled = true;
+      document.getElementById("nextQuestionBtn").disabled = false;
+      if (isCorrect) {
+        window.QuickLearnApp.showToast("Correct! Well done.", "success");
+      } else {
+        window.QuickLearnApp.showToast("Incorrect answer. See explanation.", "error");
+      }
+    }
+
+    function goToNextQuestion() {
+      const q = questions[currentIndex];
+      const isCorrect = selectedOptionIndex === q.correct;
+
+      // Record answer
+      userAnswers.push({
+        question: q.question,
+        options: q.options,
+        selected: selectedOptionIndex,
+        correct: q.correct,
+        isCorrect: isCorrect,
+        explanation: q.explanation
+      });
+
+      if (currentIndex + 1 < questions.length) {
+        currentIndex++;
+        renderCurrentQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      clearInterval(timerInterval);
+
+      const total = questions.length;
+      const correctCount = userAnswers.filter(a => a.isCorrect).length;
+      const percent = Math.round((correctCount / total) * 100);
+
+      // Determine grade
+      let grade = "C";
+      let badgeClass = "badge-secondary";
+      let headline = "Practice Makes Perfect!";
+      let feedback = "Review the explanations below and try once more to solidify your mastery.";
+
+      if (percent === 100) {
+        grade = "A+";
+        badgeClass = "badge-success";
+        headline = "Outstanding Mastery! 🌟";
+        feedback = "Flawless score! You have perfected this subject topic.";
+      } else if (percent >= 80) {
+        grade = "A";
+        badgeClass = "badge-success";
+        headline = "Excellent Performance! 👏";
+        feedback = "Very strong conceptual understanding with just minor room for review.";
+      } else if (percent >= 60) {
+        grade = "B";
+        badgeClass = "badge-warning";
+        headline = "Good Effort! 👍";
+        feedback = "Good foundation. Taking a second run at the lessons will help you reach top marks.";
+      }
+
+      // Display results
+      document.getElementById("finalScorePercent").textContent = `${percent}%`;
+      document.getElementById("finalCorrectCount").textContent = correctCount;
+      const gradeBadge = document.getElementById("finalGradeBadge");
+      gradeBadge.textContent = `GRADE: ${grade}`;
+      gradeBadge.className = `grade-badge-lg ${badgeClass}`;
+      document.getElementById("resultHeadline").textContent = headline;
+      document.getElementById("resultFeedback").textContent = feedback;
+
+      // Populate review breakdown
+      const breakdownEl = document.getElementById("reviewBreakdownContainer");
+      breakdownEl.innerHTML = userAnswers.map((item, idx) => `
+        <div style="padding: 1rem; border-radius: var(--radius-md); background: #f8fafc; border: 1px solid ${item.isCorrect ? '#86efac' : '#fca5a5'};">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <strong>Question ${idx + 1}</strong>
+            <span class="badge ${item.isCorrect ? 'badge-success' : 'badge-danger'}">
+              ${item.isCorrect ? '✓ Correct' : '✕ Incorrect'}
+            </span>
+          </div>
+          <p style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.95rem;">${item.question}</p>
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+            Your answer: <strong>${item.selected !== null ? item.options[item.selected] : 'None'}</strong> | 
+            Correct answer: <strong style="color: #15803d;">${item.options[item.correct]}</strong>
+          </div>
+          <p style="font-size: 0.825rem; color: #475569; background: #fff; padding: 0.5rem; border-radius: 6px; border: 1px dashed var(--border-color);">
+            💡 ${item.explanation}
+          </p>
+        </div>
+      `).join("");
+
+      // Save to shared assessments record (stored for Teacher portal)
+      const user = window.QuickLearnAuth.getCurrentUser();
+      const subjectTitle = {
+        mathematics: "Mathematics",
+        science: "Science",
+        english: "English"
+      }[activeSubject] || "General";
+
+      const record = {
+        id: "rec-" + Date.now(),
+        studentName: user ? user.name : "Guest Learner",
+        studentEmail: user ? user.email : "guest@quicklearn.com",
+        subject: activeSubject,
+        subjectLabel: subjectTitle,
+        score: percent,
+        total: total,
+        correctCount: correctCount,
+        grade: grade,
+        date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+        feedback: feedback
+      };
+
+      window.QuickLearnData.saveAssessmentRecord(record);
+
+      // Show result view
+      document.getElementById("quizActiveView").style.display = "none";
+      document.getElementById("quizResultView").style.display = "block";
+      window.QuickLearnApp.showToast("Assessment results saved to your profile!", "success");
+    }
+
+    function quitQuiz() {
+      if (confirm("Are you sure you want to quit the quiz? Your current progress will not be saved.")) {
+        clearInterval(timerInterval);
+        chooseAnotherSubject();
+      }
+    }
+
+    function chooseAnotherSubject() {
+      document.getElementById("quizActiveView").style.display = "none";
+      document.getElementById("quizResultView").style.display = "none";
+      document.getElementById("quizSelectionView").style.display = "block";
+    }
+
+    function restartCurrentQuiz() {
+      startQuiz(activeSubject);
+    }
+  </script>
+</body>
+</html>
